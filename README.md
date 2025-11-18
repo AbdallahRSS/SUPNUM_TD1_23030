@@ -11,7 +11,6 @@ src/main/java/com.supnum.supnum_td
 │
 ├── controller
 ├── service
-│    ├── ServerService
 ├── repository
 ├── model
 ├── config
