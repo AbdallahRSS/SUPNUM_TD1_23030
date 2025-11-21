@@ -4,18 +4,7 @@
 Service simple pour gérer et surveiller un ensemble de serveurs dans un data center.
 Le service permet de créer, lister, renommer, démarrer, arrêter et supprimer des serveurs.
 
-## Structure du projet:
 
-```
-src/main/java/com.supnum.supnum_td
-│
-├── controller
-├── service
-├── repository
-├── model
-├── config
-└── exception
-```
 
 ## Technologies:
 
