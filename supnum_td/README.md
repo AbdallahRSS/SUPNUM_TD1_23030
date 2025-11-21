@@ -1,22 +1,8 @@
-# API Gestion des Serveurs
-## Exercice 1 : REST
+# API Gestion des Serveurs (SOAP)
+# Exercice 2 : SOAP
 
-Service simple pour gérer et surveiller un ensemble de serveurs dans un data center.
-Le service permet de créer, lister, renommer, démarrer, arrêter et supprimer des serveurs.
-
-## Structure du projet:
-
-```
-src/main/java/com.supnum.supnum_td
-│
-├── controller
-├── service
-│    ├── ServerService
-├── repository
-├── model
-├── config
-└── exception
-```
+Service SOAP pour gérer et surveiller un ensemble de serveurs dans un data center.
+Le service permet de créer, lister, renommer, démarrer, arrêter et supprimer des serveurs via des requêtes SOAP.
 
 ## Technologies:
 
@@ -24,33 +10,33 @@ src/main/java/com.supnum.supnum_td
 
 - Java 17
 
-- Spring Web
+- Spring Web Services
 
 - Spring Data JPA
 
 - PostgreSQL
 
-- Swagger OpenAPI
+- SOAP
 
+- JAXB (Java Architecture for XML Binding)
 
 
 ## Configuration:
 
-Fichier `application.properties`:
+Fichier `application.properties` :
 
 ```
- spring.application.name=supnum_td
- server.port=8082
+spring.application.name=supnum_td
+server.port=8083
 
- spring.datasource.url=jdbc:postgresql://localhost:5432/supnum_td1
- spring.datasource.username=postgres
- spring.datasource.password=your_password
+spring.datasource.url=jdbc:postgresql://localhost:5432/supnum_td1
+spring.datasource.username=postgres
+spring.datasource.password=47571064
 
- spring.jpa.hibernate.ddl-auto=update
- spring.jpa.show-sql=true
- spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
 ```
-
 
 ## Modèle:
 
@@ -64,136 +50,213 @@ Table `servers`:
 
 - running
 
+## WSDL (Web Service Definition Language):
 
-## Swagger:
+La définition WSDL de votre service SOAP est accessible à l'adresse :
 
-Documentation automatique accessible via:
 ```
-http://localhost:8082/swagger-ui/index.html
+http://localhost:8083/ws/servers.wsdl
 ```
 
-## Endpoints:
-
+## Endpoints: ** SOAP UI **
 ### 1. Créer un serveur
 
-**POST**
-`/api/servers`
-
-Body:
+### SOAP Request :
 ```
-{
-  "name": "server1",
-  "ipAddress": "192.168.1.10"
-}
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://supnum.com/servers">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ser:createServerRequest>
+         <ser:name>server3</ser:name>
+         <ser:ipAddress>192.168.1.3</ser:ipAddress>
+      
+         
+      </ser:createServerRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
 ```
-Réponse:
+
+### SOAP Response :
 
 ```
-{
-  "id": 1,
-  "name": "server1",
-  "ipAddress": "192.168.1.10",
-  "running": false
-}
-
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+   <SOAP-ENV:Header/>
+   <SOAP-ENV:Body>
+      <ns3:createServerResponse xmlns:ns3="http://supnum.com/servers">
+         <ns3:server>
+            <id>6</id>
+            <ipAddress>192.168.1.3</ipAddress>
+            <name>server3</name>
+            <running>false</running>
+         </ns3:server>
+      </ns3:createServerResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
 ```
 
 ### 2. Lister tous les serveurs
 
-**GET**
-`/api/servers`
-
-
-Réponse:
+### SOAP Request :
 ```
-[
-  {
-    "id": 1,
-    "name": "server1",
-    "ipAddress": "192.168.1.10",
-    "running": false
-  }
-]
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://supnum.com/servers">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ser:listServersRequest></ser:listServersRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
+```
 
+### SOAP Response :
+
+```
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+   <SOAP-ENV:Header/>
+   <SOAP-ENV:Body>
+      <ns3:listServersResponse xmlns:ns3="http://supnum.com/servers">
+         <ns3:servers>
+            <id>2</id>
+            <ipAddress>192.168.1.20</ipAddress>
+            <name>server2</name>
+            <running>true</running>
+         </ns3:servers>
+         <ns3:servers>
+            <id>6</id>
+            <ipAddress>192.168.1.3</ipAddress>
+            <name>server3</name>
+            <running>false</running>
+         </ns3:servers>
+      </ns3:listServersResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
 ```
 
 
 ### 3. Renommer un serveur
 
-**PUT**
-`/api/servers/{id}/rename`
-
-Body:
+### SOAP Request :
 ```
-{
-  "name": "newName"
-}
-
-```
-
-Réponse:
-```
-{
-    "id": 1,
-    "name": "newName",
-    "ipAddress": "192.168.1.10",
-    "running": false
-}
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://supnum.com/servers">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ser:renameServerRequest>
+         <ser:id>2</ser:id>
+         <ser:newName>Maste server</ser:newName>
+      </ser:renameServerRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
 ```
 
+### SOAP Response :
 
-### 4. Récupérer le statut d’un serveur
-
-**GET**
-`/api/servers/{id}/status`
-
-
-Réponse:
 ```
-{
-  "running": false
-}
-
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+   <SOAP-ENV:Header/>
+   <SOAP-ENV:Body>
+      <ns3:renameServerResponse xmlns:ns3="http://supnum.com/servers">
+         <ns3:server>
+            <id>2</id>
+            <ipAddress>192.168.1.20</ipAddress>
+            <name>Maste server</name>
+            <running>true</running>
+         </ns3:server>
+      </ns3:renameServerResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
 ```
 
 
+### 4. Démarrer un serveur
 
-### 5. Démarrer un serveur
-
-**PUT**
-`/api/servers/{id}/start`
-
-
-Réponse:
+### SOAP Request :
 ```
-{
-  "id": 1,
-  "name": "newName",
-  "ipAddress": "192.168.1.10",
-  "running": true
-}
-
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://supnum.com/servers">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ser:startServerRequest>
+         <ser:id>6</ser:id>
+      </ser:startServerRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
 ```
 
+### SOAP Response :
+
+```
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+   <SOAP-ENV:Header/>
+   <SOAP-ENV:Body>
+      <ns3:startServerResponse xmlns:ns3="http://supnum.com/servers">
+         <server>
+            <id>6</id>
+            <ipAddress>192.168.1.3</ipAddress>
+            <name>server3</name>
+            <running>true</running>
+         </server>
+      </ns3:startServerResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
 
 
-### 6. Arrêter un serveur
 
-**PUT**
-`/api/servers/{id}/stop`
+### 5. Arrette un serveur
+
+### SOAP Request :
+```
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://supnum.com/servers">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ser:stopServerRequest>
+         <ser:id>6</ser:id>
+      </ser:stopServerRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
+```
+
+### SOAP Response :
+
+```
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+   <SOAP-ENV:Header/>
+   <SOAP-ENV:Body>
+      <ns3:stopServerResponse xmlns:ns3="http://supnum.com/servers">
+         <ns3:server>
+            <id>6</id>
+            <ipAddress>192.168.1.3</ipAddress>
+            <name>server3</name>
+            <running>false</running>
+         </ns3:server>
+      </ns3:stopServerResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
 
 
 
-### 7. Supprimer un serveur
+### 6. Supprimer un serveur
 
-**DELETE**
-`/api/servers/{id}`
+### SOAP Request :
+```
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://supnum.com/servers">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ser:deleteServerRequest>
+         <ser:id>6</ser:id>
+      </ser:deleteServerRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
+```
 
-### Condition:
+### SOAP Response :
 
-- Suppression interdite si le serveur est en cours d’exécution
-
-- Renvoie une erreur dans ce cas
-
-
+```
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+   <SOAP-ENV:Header/>
+   <SOAP-ENV:Body>
+      <ns2:deleteServerResponse xmlns:ns2="http://supnum.com/servers">
+         <ns2:success>true</ns2:success>
+      </ns2:deleteServerResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
 
