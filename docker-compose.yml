@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: supnum_postgres
+    environment:
+      POSTGRES_DB: supnum_td1
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  soap-service:
+    build: ./supnum_td
+    container_name: supnum_soap
+    depends_on:
+      - postgres
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/supnum_td1
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 47571064
+    restart: always
+
+volumes:
+  postgres_data:
