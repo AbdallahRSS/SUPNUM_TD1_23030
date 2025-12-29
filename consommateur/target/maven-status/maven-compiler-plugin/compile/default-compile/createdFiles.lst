@@ -1,0 +1,8 @@
+com/supnum/supnum_td/model/Server.class
+com/supnum/supnum_td/config/SwaggerConfig.class
+com/supnum/supnum_td/model/StatusResponse.class
+com/supnum/supnum_td/controller/ServerController.class
+com/supnum/supnum_td/SupnumTdApplication.class
+com/supnum/supnum_td/service/ServerService.class
+com/supnum/supnum_td/service/MiddleServiceClient.class
+com/supnum/supnum_td/config/RestConfig.class

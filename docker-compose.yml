@@ -1,30 +1,49 @@
-version: "3.9"
-
 services:
-  postgres:
+  postgres_td1:
     image: postgres:15
-    container_name: supnum_postgres
+    container_name: supnum_postgres_td1
     environment:
       POSTGRES_DB: supnum_td1
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: 47571064
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_td1_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
   soap-service:
-    build: ./supnum_td
+    build: ./SOAP-service
     container_name: supnum_soap
     depends_on:
-      - postgres
+      - postgres_td1
     ports:
       - "8082:8082"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/supnum_td1
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_td1:5432/supnum_td1
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: 47571064
     restart: always
 
+  middle-service:
+    build: ./middle-service
+    container_name: supnum_middle
+    depends_on:
+      - soap-service
+    ports:
+      - "8083:8083"
+    restart: always
+
+  consommateur:
+    build: ./consommateur
+    container_name: supnum_consommateur
+    depends_on:
+      - middle-service
+    ports:
+      - "8084:8084"
+    environment:
+      MIDDLE_SERVICE_BASE_URL: http://middle-service:8083
+    restart: always
+
 volumes:
-  postgres_data:
+  postgres_td1_data: 
